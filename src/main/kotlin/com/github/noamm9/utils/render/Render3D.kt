@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer
 import net.minecraft.client.gui.Font
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction
+import net.minecraft.network.chat.Component
 import net.minecraft.util.LightCoordsUtil
 import net.minecraft.world.level.block.Blocks
 import net.minecraft.world.phys.AABB
@@ -53,19 +54,13 @@ object Render3D {
         matrixStack.pushPose()
         matrixStack.translate(camera.position().reverse())
 
-        if (fill) consumers.getBuffer(if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED).addFilledBoxVertices(
-            matrixStack.last(),
-            minX,
-            minY, minZ, maxX, maxY, maxZ, fillR,
-            fillG, fillB, fillA
-        )
+        if (fill) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED) { pose, buffer ->
+            buffer.addFilledBoxVertices(pose, minX, minY, minZ, maxX, maxY, maxZ, fillR, fillG, fillB, fillA)
+        }
 
-        if (outline) consumers.getBuffer(if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES).addLineBoxVertices(
-            matrixStack.last(),
-            minX,
-            minY, minZ, maxX, maxY, maxZ, outlineR,
-            outlineG, outlineB, 1f, lineWidth.toFloat()
-        )
+        if (outline) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES) { pose, buffer ->
+            buffer.addLineBoxVertices(pose, minX, minY, minZ, maxX, maxY, maxZ, outlineR, outlineG, outlineB, 1f, lineWidth.toFloat())
+        }
 
         matrixStack.popPose()
     }
@@ -88,13 +83,12 @@ object Render3D {
     ) {
         matrixStack.pushPose()
         matrixStack.translate(camera.position().reverse())
-        val buffer = consumers.getBuffer(if (phase) NoammRenderLayers.CIRCLE_FILLED_THROUGH_WALLS else NoammRenderLayers.CIRCLE_FILLED)
+        val layer = if (phase) NoammRenderLayers.CIRCLE_FILLED_THROUGH_WALLS else NoammRenderLayers.CIRCLE_FILLED
 
         val r = color.red / 255f
         val g = color.green / 255f
         val b = color.blue / 255f
         val a = color.alpha / 255f
-        val pose = matrixStack.last()
         val segments = (36 * radius).toInt()
         val size = thickness.toDouble() / 40.0
         val innerR = radius.toDouble() - size
@@ -102,7 +96,7 @@ object Render3D {
         val bottomY = (center.y - size).toFloat()
         val topY = (center.y + size).toFloat()
 
-        for (i in 0 until segments) {
+        collector.submitCustomGeometry(matrixStack, layer) { pose, buffer -> for (i in 0 until segments) {
             val angle1 = i * (2.0 * Math.PI / segments)
             val angle2 = (i + 1) * (2.0 * Math.PI / segments)
 
@@ -140,7 +134,7 @@ object Render3D {
             buffer.addVertex(pose, x1Outer, bottomY, z1Outer).setColor(r, g, b, a)
             buffer.addVertex(pose, x2Outer, bottomY, z2Outer).setColor(r, g, b, a)
             buffer.addVertex(pose, x2Inner, bottomY, z2Inner).setColor(r, g, b, a)
-        }
+        } }
 
         matrixStack.popPose()
     }
@@ -160,13 +154,11 @@ object Render3D {
         matrixStack.mulPose(camera.rotation())
 
         val layer = if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED
-        val buffer = consumers.getBuffer(layer)
 
         val r = color.red / 255f
         val g = color.green / 255f
         val b = color.blue / 255f
         val a = color.alpha / 255f
-        val matrix = matrixStack.last().pose()
 
         val thicknessVal = thickness.toDouble() / 40.0
         val radiusVal = radius.toDouble()
@@ -174,6 +166,8 @@ object Render3D {
         val outerR = radiusVal + thicknessVal
 
         val step = 2.0 * Math.PI / segments
+        collector.submitCustomGeometry(matrixStack, layer) { pose, buffer ->
+        val matrix = pose.pose()
         for (i in 0 until segments) {
             val c1 = cos(i * step).toFloat()
             val s1 = sin(i * step).toFloat()
@@ -196,6 +190,7 @@ object Render3D {
             buffer.addVertex(matrix, i1x, i1y, 0f).setColor(r, g, b, a)
             buffer.addVertex(matrix, o2x, o2y, 0f).setColor(r, g, b, a)
             buffer.addVertex(matrix, i2x, i2y, 0f).setColor(r, g, b, a)
+        }
         }
 
         matrixStack.popPose()
@@ -226,21 +221,13 @@ object Render3D {
         matrixStack.pushPose()
         matrixStack.translate(cam.x, cam.y, cam.z)
 
-        if (fill) consumers.getBuffer(if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED).addFilledBoxVertices(
-            matrixStack.last(),
-            xd - hw,
-            yd, zd - hw, xd + hw,
-            yd + hd, zd + hw, fillColor.red / 255f,
-            fillColor.green / 255f, fillColor.blue / 255f, fillColor.alpha / 255f
-        )
+        if (fill) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED) { pose, buffer ->
+            buffer.addFilledBoxVertices(pose, xd - hw, yd, zd - hw, xd + hw, yd + hd, zd + hw, fillColor.red / 255f, fillColor.green / 255f, fillColor.blue / 255f, fillColor.alpha / 255f)
+        }
 
-        if (outline) consumers.getBuffer(if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES).addLineBoxVertices(
-            matrixStack.last(),
-            xd - hw,
-            yd, zd - hw, xd + hw,
-            yd + hd, zd + hw, outlineColor.red / 255f,
-            outlineColor.green / 255f, outlineColor.blue / 255f, 1f, lineWidth.toFloat()
-        )
+        if (outline) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES) { pose, buffer ->
+            buffer.addLineBoxVertices(pose, xd - hw, yd, zd - hw, xd + hw, yd + hd, zd + hw, outlineColor.red / 255f, outlineColor.green / 255f, outlineColor.blue / 255f, 1f, lineWidth.toFloat())
+        }
 
         matrixStack.popPose()
     }
@@ -278,19 +265,13 @@ object Render3D {
         matrixStack.pushPose()
         matrixStack.translate(- cam.x, - cam.y, - cam.z)
 
-        if (fill) consumers.getBuffer(if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED).addFilledBoxVertices(
-            matrixStack.last(),
-            minX,
-            minY, minZ, maxX, maxY, maxZ, fillColor.red / 255f,
-            fillColor.green / 255f, fillColor.blue / 255f, fillColor.alpha / 255f
-        )
+        if (fill) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.FILLED_THROUGH_WALLS else NoammRenderLayers.FILLED) { pose, buffer ->
+            buffer.addFilledBoxVertices(pose, minX, minY, minZ, maxX, maxY, maxZ, fillColor.red / 255f, fillColor.green / 255f, fillColor.blue / 255f, fillColor.alpha / 255f)
+        }
 
-        if (outline) consumers.getBuffer(if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES).addLineBoxVertices(
-            matrixStack.last(),
-            minX,
-            minY, minZ, maxX, maxY, maxZ, outlineColor.red / 255f,
-            outlineColor.green / 255f, outlineColor.blue / 255f, 1f, lineWidth.toFloat()
-        )
+        if (outline) collector.submitCustomGeometry(matrixStack, if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES) { pose, buffer ->
+            buffer.addLineBoxVertices(pose, minX, minY, minZ, maxX, maxY, maxZ, outlineColor.red / 255f, outlineColor.green / 255f, outlineColor.blue / 255f, 1f, lineWidth.toFloat())
+        }
 
         matrixStack.popPose()
     }
@@ -327,17 +308,17 @@ object Render3D {
         val lines = text.addColor().lineSequence()
 
         for ((i, line) in lines.withIndex())
-            mc.font.drawInBatch(
-                line,
+            collector.submitText(
+                matrixStack,
                 - line.width() / 2f,
                 i * 9f,
-                color.rgb,
+                Component.literal(line).visualOrderText,
                 true,
-                matrixStack.last().pose(),
-                consumers,
                 textLayer,
+                LightCoordsUtil.FULL_BRIGHT,
+                color.rgb,
                 0,
-                LightCoordsUtil.FULL_BRIGHT
+                0
             )
 
         matrixStack.popPose()
@@ -355,12 +336,11 @@ object Render3D {
         matrixStack.pushPose()
         matrixStack.translate(camera.position().reverse())
 
-        val buffer = consumers.getBuffer(NoammRenderLayers.LINES)
         val direction = finish.subtract(start).normalize().toVector3f()
         val timeOffset = (System.currentTimeMillis() % 100000L) / 1000f
-        val matrix = matrixStack.last()
         val segments = 10
 
+        collector.submitCustomGeometry(matrixStack, NoammRenderLayers.LINES) { pose, buffer ->
         for (i in 0 until segments) {
             val t0 = i / segments.toFloat()
             val t1 = (i + 1) / segments.toFloat()
@@ -382,8 +362,9 @@ object Render3D {
             val g1 = ((rgb1 shr 8) and 0xFF) / 255f
             val b1 = (rgb1 and 0xFF) / 255f
 
-            buffer.addVertex(matrix, p0.x.toFloat(), p0.y.toFloat(), p0.z.toFloat()).setColor(r0, g0, b0, alpha).setNormal(matrix, direction).setLineWidth(thickness.toFloat())
-            buffer.addVertex(matrix, p1.x.toFloat(), p1.y.toFloat(), p1.z.toFloat()).setColor(r1, g1, b1, alpha).setNormal(matrix, direction).setLineWidth(thickness.toFloat())
+            buffer.addVertex(pose, p0.x.toFloat(), p0.y.toFloat(), p0.z.toFloat()).setColor(r0, g0, b0, alpha).setNormal(pose, direction).setLineWidth(thickness.toFloat())
+            buffer.addVertex(pose, p1.x.toFloat(), p1.y.toFloat(), p1.z.toFloat()).setColor(r1, g1, b1, alpha).setNormal(pose, direction).setLineWidth(thickness.toFloat())
+        }
         }
 
         matrixStack.popPose()
@@ -395,15 +376,15 @@ object Render3D {
         matrixStack.translate(- cameraPos.x, - cameraPos.y, - cameraPos.z)
 
         val lines = if (phase) NoammRenderLayers.LINES_THROUGH_WALLS else NoammRenderLayers.LINES
-        val buffer = consumers.getBuffer(lines)
-
-        buffer.addLine(
-            matrixStack.last(),
-            start.x.toFloat(), start.y.toFloat(), start.z.toFloat(),
-            finish.x.toFloat(), finish.y.toFloat(), finish.z.toFloat(),
-            color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f,
-            thickness.toFloat()
-        )
+        collector.submitCustomGeometry(matrixStack, lines) { pose, buffer ->
+            buffer.addLine(
+                pose,
+                start.x.toFloat(), start.y.toFloat(), start.z.toFloat(),
+                finish.x.toFloat(), finish.y.toFloat(), finish.z.toFloat(),
+                color.red / 255f, color.green / 255f, color.blue / 255f, color.alpha / 255f,
+                thickness.toFloat()
+            )
+        }
 
         matrixStack.popPose()
     }
@@ -412,16 +393,17 @@ object Render3D {
         matrixStack.pushPose()
         matrixStack.translate(camera.position().reverse())
 
-        val buffer = consumers.getBuffer(NoammRenderLayers.LINES_THROUGH_WALLS)
         val cameraPoint = camera.position().add(Vec3.directionFromRotation(camera.xRot(), camera.yRot()))
 
-        buffer.addLine(
-            matrixStack.last(),
-            cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat(),
-            point.x.toFloat(), point.y.toFloat(), point.z.toFloat(),
-            color.red / 255f, color.green / 255f, color.blue / 255f, 1f,
-            thickness.toFloat()
-        )
+        collector.submitCustomGeometry(matrixStack, NoammRenderLayers.LINES_THROUGH_WALLS) { pose, buffer ->
+            buffer.addLine(
+                pose,
+                cameraPoint.x.toFloat(), cameraPoint.y.toFloat(), cameraPoint.z.toFloat(),
+                point.x.toFloat(), point.y.toFloat(), point.z.toFloat(),
+                color.red / 255f, color.green / 255f, color.blue / 255f, 1f,
+                thickness.toFloat()
+            )
+        }
 
         matrixStack.popPose()
     }

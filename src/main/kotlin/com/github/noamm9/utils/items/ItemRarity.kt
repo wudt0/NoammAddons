@@ -1,5 +1,6 @@
 package com.github.noamm9.utils.items
 
+import com.github.noamm9.utils.ColorUtils.color
 import net.minecraft.ChatFormatting
 import net.minecraft.world.item.ItemStack
 import java.awt.Color
@@ -19,7 +20,7 @@ enum class ItemRarity(val baseColor: ChatFormatting) {
     SPECIAL(ChatFormatting.RED),
     VERY_SPECIAL(ChatFormatting.RED);
 
-    val color = Color(baseColor.color !!)
+    val color = Color(baseColor.color)
     val loreName by lazy { name.replace("_", " ").uppercase() }
 
     companion object {

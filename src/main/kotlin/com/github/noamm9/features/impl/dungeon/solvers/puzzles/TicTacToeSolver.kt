@@ -18,6 +18,8 @@ import com.github.noamm9.utils.location.LocationUtils
 import com.github.noamm9.utils.render.Render3D.renderBoxBounds
 import com.github.noamm9.utils.render.RenderContext
 import net.minecraft.core.BlockPos
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.Identifier
 import net.minecraft.core.Direction
 import net.minecraft.core.component.DataComponents
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
@@ -56,7 +58,7 @@ object TicTacToeSolver: PuzzleSolver {
     override fun onPacket(event: MainThreadPacketReceivedEvent.Pre) {
         if (! inTicTacToe) return
         val packet = event.packet as? ClientboundAddEntityPacket ?: return
-        if (packet.type != EntityType.ITEM_FRAME) return
+        if (packet.type != BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("item_frame"))) return
         solve()
     }
 

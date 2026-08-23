@@ -28,7 +28,7 @@ object SoundManager: Feature("Adjust volumes for every sound in the game") {
 
     @JvmStatic
     fun recordPlayedSound(sound: SoundInstance) {
-        if (mc.screen is SoundManagerScreen) return
+        if (mc.gui.screen() is SoundManagerScreen) return
         recentSounds.add(sound.identifier)
 
         if (recentSounds.size > 100) recentSounds.remove(recentSounds.first())

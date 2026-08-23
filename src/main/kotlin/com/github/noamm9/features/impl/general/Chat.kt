@@ -1,5 +1,8 @@
 package com.github.noamm9.features.impl.general
 
+import com.github.noamm9.utils.ColorUtils.char
+import com.github.noamm9.utils.ColorUtils.color
+import com.github.noamm9.utils.ColorUtils.isColor
 import com.github.noamm9.NoammAddons
 import com.github.noamm9.commands.CommandBuilder
 import com.github.noamm9.config.PogObject
@@ -81,7 +84,7 @@ object Chat: Feature("Useful tweaks for the chat such as Ctrl + Click to copy me
     override fun init() {
         register<MouseClickEvent> {
             if (! ctrlClickToCopy.value) return@register
-            if (mc.screen !is ChatScreen) return@register
+            if (mc.gui.screen() !is ChatScreen) return@register
             if (event.button != 0) return@register
             if (event.action != GLFW.GLFW_PRESS) return@register
             if (GLFW.glfwGetKey(mc.window.handle(), GLFW.GLFW_KEY_LEFT_CONTROL) != GLFW.GLFW_PRESS) return@register
@@ -127,7 +130,7 @@ object Chat: Feature("Useful tweaks for the chat such as Ctrl + Click to copy me
     }
 
     private fun getHoveredMsg(): String {
-        val chatHud = (mc.gui.chat as? IChatComponent) ?: return ""
+        val chatHud = (mc.gui.hud.chat as? IChatComponent) ?: return ""
         val i = chatHud.getLineIndex().takeUnless { it < 0 || it >= chatHud.visibleMessages.size } ?: return ""
 
         val lines = ArrayList<GuiMessage.Line>()

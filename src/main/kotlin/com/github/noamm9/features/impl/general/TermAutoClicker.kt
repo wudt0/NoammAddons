@@ -25,7 +25,7 @@ object TermAutoClicker: Feature(name = "Term AC", description = "Automatically u
         register<TickEvent.Start> {
             val now = System.currentTimeMillis()
             if (now < nextLeftClick) return@register
-            if (mc.screen != null) return@register
+            if (mc.gui.screen() != null) return@register
             if (! mc.options.keyUse.isDown) return@register
             if (player.isUsingItem) return@register
 

@@ -9,11 +9,13 @@ import com.github.noamm9.utils.equalsOneOf
 import com.github.noamm9.utils.items.ItemUtils
 import com.github.noamm9.utils.location.LocationUtils
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.chat.Component
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.network.protocol.game.ClientboundLevelParticlesPacket
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket
+import net.minecraft.resources.Identifier
 import net.minecraft.world.entity.Entity
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.EquipmentSlot
@@ -61,9 +63,9 @@ object RenderOptimizer: Feature("Optimize Rendering by hiding useless stuff.") {
                 }
 
                 is ClientboundAddEntityPacket -> {
-                    val isBlock = packet.type == EntityType.FALLING_BLOCK && hideFallingBlocks.value
-                    val isLightning = packet.type == EntityType.LIGHTNING_BOLT && hideLightning.value
-                    val isXp = packet.type == EntityType.EXPERIENCE_ORB && hideXpOrbs.value
+                    val isBlock = packet.type == BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("falling_block")) && hideFallingBlocks.value
+                    val isLightning = packet.type == BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("lightning_bolt")) && hideLightning.value
+                    val isXp = packet.type == BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("experience_orb")) && hideXpOrbs.value
 
                     if (isBlock || isLightning || isXp) event.isCanceled = true
                 }

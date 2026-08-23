@@ -58,7 +58,7 @@ object AutoGFS: Feature("Automatically refills dungeon items from your sacks usi
 
     private fun refill() {
         if (! enabled || ! LocationUtils.inDungeon) return
-        if (mc.screen != null) return
+        if (mc.gui.screen() != null) return
         if (DungeonListener.thePlayer?.isDead == true) return
 
         var pearlCount = 0

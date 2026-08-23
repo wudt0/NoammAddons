@@ -11,6 +11,8 @@ import com.github.noamm9.utils.NumbersUtils.toFixed
 import com.github.noamm9.utils.PlayerUtils
 import com.github.noamm9.utils.location.LocationUtils
 import com.github.noamm9.utils.render.Render2D.drawCenteredString
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.Identifier
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket
 import net.minecraft.world.entity.EntityType
 
@@ -48,7 +50,7 @@ object MaxorsCrystals: Feature("Utilities for F7 Maxor's Crystals") {
             if (! placeTimer.value) return@register
             if (pickupTime == null) return@register
             val packet = event.packet as? ClientboundAddEntityPacket ?: return@register
-            if (packet.type != EntityType.END_CRYSTAL) return@register
+            if (packet.type != BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("end_crystal"))) return@register
             if (packet.y.toInt() != 224) return@register
 
             val spawnPos = MathUtils.vec(packet.x, packet.y, packet.z)

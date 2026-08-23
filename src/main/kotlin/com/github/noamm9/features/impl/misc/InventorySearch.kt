@@ -80,7 +80,7 @@ object InventorySearch: Feature("Lets you search in inventory and support math")
         }
 
         register<ScreenEvent.PostRender> {
-            if (mc.screen !is AbstractContainerScreen<*>) return@register
+            if (mc.gui.screen() !is AbstractContainerScreen<*>) return@register
 
             Resolution.push(event.context)
             searchHud.renderElement(event.context, false)
@@ -88,7 +88,7 @@ object InventorySearch: Feature("Lets you search in inventory and support math")
         }
 
         register<MouseClickEvent> {
-            if (mc.screen !is AbstractContainerScreen<*>) return@register
+            if (mc.gui.screen() !is AbstractContainerScreen<*>) return@register
             if (event.action == GLFW.GLFW_RELEASE) searchHandler.mouseReleased()
             if (event.action != GLFW.GLFW_PRESS) return@register
 
@@ -100,14 +100,14 @@ object InventorySearch: Feature("Lets you search in inventory and support math")
         }
 
         register<KeyboardEvent.CharTyped> {
-            if (mc.screen !is AbstractContainerScreen<*>) return@register
+            if (mc.gui.screen() !is AbstractContainerScreen<*>) return@register
             if (! searchHandler.listening) return@register
             searchHandler.keyTyped(event.charEvent)
             event.isCanceled = true
         }
 
         register<KeyboardEvent.KeyPressed> {
-            if (mc.screen !is AbstractContainerScreen<*>) return@register
+            if (mc.gui.screen() !is AbstractContainerScreen<*>) return@register
 
             if (event.keyEvent.key == GLFW.GLFW_KEY_F && event.keyEvent.hasControlDown()) {
                 searchHandler.listening = ! searchHandler.listening

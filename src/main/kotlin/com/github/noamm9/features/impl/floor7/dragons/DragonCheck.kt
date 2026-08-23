@@ -8,7 +8,9 @@ import com.github.noamm9.utils.ScoreboardUtils
 import com.github.noamm9.utils.dungeons.DungeonListener
 import com.github.noamm9.utils.remove
 import net.minecraft.core.particles.ParticleTypes
+import net.minecraft.core.registries.BuiltInRegistries
 import net.minecraft.network.protocol.game.*
+import net.minecraft.resources.Identifier
 import net.minecraft.sounds.SoundEvents
 import net.minecraft.world.entity.EntityType
 import net.minecraft.world.entity.decoration.ArmorStand
@@ -70,7 +72,7 @@ object DragonCheck {
     }
 
     fun dragonSpawn(packet: ClientboundAddEntityPacket) {
-        if (packet.type != EntityType.ENDER_DRAGON) return
+        if (packet.type != BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("ender_dragon"))) return
         val spawnVec = Vec3(packet.x, packet.y, packet.z)
         val newId = packet.id
 

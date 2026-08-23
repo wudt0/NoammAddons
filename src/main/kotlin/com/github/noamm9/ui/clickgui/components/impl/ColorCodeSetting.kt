@@ -1,5 +1,8 @@
 package com.github.noamm9.ui.clickgui.components.impl
 
+import com.github.noamm9.utils.ColorUtils.char
+import com.github.noamm9.utils.ColorUtils.color
+import com.github.noamm9.utils.ColorUtils.isColor
 import com.github.noamm9.config.Savable
 import com.github.noamm9.ui.clickgui.components.Setting
 import com.github.noamm9.ui.clickgui.components.Style

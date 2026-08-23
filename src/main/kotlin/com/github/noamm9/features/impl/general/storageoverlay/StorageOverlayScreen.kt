@@ -98,7 +98,7 @@ class StorageOverlayScreen: Screen(Component.literal("Storage Overlay")) {
     private val scrollBarY get() = measurements.y + PADDING
     private val scrollBarH get() = measurements.innerScrollPanelHeight
     private val maxScroll get() = (lastRenderedInnerHeight.toFloat() + 6 - measurements.innerScrollPanelHeight).coerceAtLeast(0f)
-    private val screenMenu get() = (mc.screen as? AbstractContainerScreen<*>)?.menu
+    private val screenMenu get() = (mc.gui.screen() as? AbstractContainerScreen<*>)?.menu
 
     override fun init() {
         super.init()

@@ -11,7 +11,7 @@ object GuiUtils {
         LEFT, RIGHT, MIDDLE;
     }
     
-    fun setScreen(screen: Screen?) = ThreadUtils.scheduledTask(1) { mc.setScreen(screen) }
+    fun setScreen(screen: Screen?) = ThreadUtils.scheduledTask(1) { if (screen == null) mc.gui.setScreen(null) else mc.setScreenAndShow(screen) }
 
     fun clickSlot(slotIndex: Int, btn: ButtonType, shift: Boolean = false) {
         val containerId = mc.player?.containerMenu?.containerId ?: return

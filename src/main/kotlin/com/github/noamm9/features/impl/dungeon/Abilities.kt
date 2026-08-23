@@ -58,7 +58,7 @@ object Abilities: Feature(
         register<KeyboardEvent.KeyPressed> {
             if (! LocationUtils.inDungeon || ! DungeonListener.dungeonStarted) return@register
             if (event.action != GLFW.GLFW_PRESS) return@register
-            if (mc.screen != null) return@register
+            if (mc.gui.screen() != null) return@register
 
             if (ultKeybind.isPressed()) {
                 PlayerUtils.useDungeonClassAbility(true)

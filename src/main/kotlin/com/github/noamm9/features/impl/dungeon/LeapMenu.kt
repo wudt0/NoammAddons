@@ -369,6 +369,6 @@ object LeapMenu: Feature("Custom Leap Menu and leap message"), ICustomMenu {
         DungeonClass.Tank to listOf(DungeonClass.Archer, DungeonClass.Berserk, DungeonClass.Healer, DungeonClass.Mage)
     )
 
-    override fun isActive() = mc.screen?.isLeapMenu() ?: false
+    override fun isActive() = mc.gui.screen()?.isLeapMenu() ?: false
     private fun Screen.isLeapMenu() = enabled && customLeapMenu.value && LocationUtils.inDungeon && title.string.lowercase().containsOneOf("spirit leap", "teleport to player")
 }

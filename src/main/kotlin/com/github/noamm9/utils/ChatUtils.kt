@@ -1,5 +1,8 @@
 package com.github.noamm9.utils
 
+import com.github.noamm9.utils.ColorUtils.char
+import com.github.noamm9.utils.ColorUtils.color
+import com.github.noamm9.utils.ColorUtils.isColor
 import com.github.noamm9.NoammAddons
 import com.github.noamm9.NoammAddons.mc
 import com.github.noamm9.NoammAddons.scope
@@ -137,8 +140,8 @@ object ChatUtils: ISelfInit {
         sendMessage("/pc $msg")
     }
 
-    fun chat(msg: Any?) = ThreadUtils.runOnMcThread { mc.gui.chat.addClientSystemMessage(Component.literal(msg.toString().addColor())) }
-    fun chat(comp: Component) = ThreadUtils.runOnMcThread { mc.gui.chat.addClientSystemMessage(comp) }
+    fun chat(msg: Any?) = ThreadUtils.runOnMcThread { mc.gui.hud.chat.addClientSystemMessage(Component.literal(msg.toString().addColor())) }
+    fun chat(comp: Component) = ThreadUtils.runOnMcThread { mc.gui.hud.chat.addClientSystemMessage(comp) }
 
     fun String.addColor() = replace("&", "§")
 

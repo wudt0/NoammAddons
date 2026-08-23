@@ -34,7 +34,7 @@ object EventDispatcher: ISelfInit, Shortcuts {
     private var invItems: MutableMap<Int, ItemStack>? = null
 
     override fun init() {
-        LevelRenderEvents.AFTER_TRANSLUCENT_TERRAIN.register { context ->
+        LevelRenderEvents.COLLECT_SUBMITS.register { context ->
             EventBus.post(RenderWorldEvent(RenderContext.fromContext(context)))
         }
 

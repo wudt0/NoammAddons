@@ -13,7 +13,7 @@ object SnappyTappy: Feature("Prevents standing still when pressing opposing dire
 
     @JvmStatic
     fun resolveInput(input: Input): Input {
-        if (! enabled || mc.screen != null) {
+        if (! enabled || mc.gui.screen() != null) {
             physicallyDown.clear()
             pressTimes.clear()
             return input

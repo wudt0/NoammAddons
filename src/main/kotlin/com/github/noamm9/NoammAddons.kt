@@ -49,7 +49,7 @@ object NoammAddons: ClientModInitializer {
     }
 
     override fun onInitializeClient() {
-        PictureInPictureRendererRegistry.register { ItemRenderer(it.bufferSource()) }
+        PictureInPictureRendererRegistry.register { ItemRenderer() }
         MeowddingItemDfu.load()
 
         ClassGraphInitializer().initAll()

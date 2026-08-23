@@ -29,7 +29,7 @@ object ClickGui: Feature("A feature used to change the ClickGui configuration.",
 
     override fun init() {
         register<KeyboardEvent.KeyPressed> {
-            if (mc.screen != null || event.action != GLFW.GLFW_PRESS) return@register
+            if (mc.gui.screen() != null || event.action != GLFW.GLFW_PRESS) return@register
             if (! openKeybind.matches(event.keyEvent.key, mouse = false)) return@register
 
             GuiUtils.setScreen(ClickGuiScreen())
@@ -37,7 +37,7 @@ object ClickGui: Feature("A feature used to change the ClickGui configuration.",
         }
 
         register<MouseClickEvent> {
-            if (mc.screen != null || event.action != GLFW.GLFW_PRESS) return@register
+            if (mc.gui.screen() != null || event.action != GLFW.GLFW_PRESS) return@register
             if (! openKeybind.matches(event.button, mouse = true)) return@register
 
             GuiUtils.setScreen(ClickGuiScreen())

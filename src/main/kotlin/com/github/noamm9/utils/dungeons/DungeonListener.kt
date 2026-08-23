@@ -18,6 +18,8 @@ import com.github.noamm9.utils.dungeons.enums.Blessing
 import com.github.noamm9.utils.dungeons.enums.DungeonClass
 import com.github.noamm9.utils.dungeons.enums.Puzzle
 import com.github.noamm9.utils.dungeons.map.core.DoorType
+import net.minecraft.core.registries.BuiltInRegistries
+import net.minecraft.resources.Identifier
 import com.github.noamm9.utils.dungeons.map.core.RoomState
 import com.github.noamm9.utils.dungeons.map.core.RoomType
 import com.github.noamm9.utils.dungeons.map.handlers.DungeonScanner
@@ -99,7 +101,7 @@ object DungeonListener: ISelfInit {
                 }
 
                 is ClientboundAddEntityPacket -> {
-                    if (packet.type != EntityType.PLAYER) return@register
+                    if (packet.type != BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.withDefaultNamespace("player"))) return@register
                     val entity = mc.level?.getEntity(packet.id) as? AbstractClientPlayer ?: return@register
                     dungeonTeammates.find { it.entity == null && it.name == entity.name.string }?.entity = entity
                 }

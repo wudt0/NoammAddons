@@ -152,7 +152,7 @@ object PlayerUtils: ISelfInit, Shortcuts {
 
 
     private var awaiting4EQ = emptyList<String>()
-    private val inLeapMenu get() = mc.screen?.title?.unformattedText.equals("spirit leap", true)
+    private val inLeapMenu get() = mc.gui.screen()?.title?.unformattedText.equals("spirit leap", true)
     private var awaitingLeap: DungeonPlayer? = null
 
     suspend fun changeMaskAction() = quickSwapAction("SPIRIT_MASK", "BONZO_MASK")

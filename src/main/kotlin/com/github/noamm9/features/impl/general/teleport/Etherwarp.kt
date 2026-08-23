@@ -114,7 +114,7 @@ object Etherwarp: Feature("Etherwarp overlay, sound, and left-click activation."
             if (! leftClick.value) return@register
             if (event.button != 0) return@register
             if (event.action != GLFW.GLFW_PRESS) return@register
-            if (mc.screen != null) return@register
+            if (mc.gui.screen() != null) return@register
             //#if CHEAT
             if (! mc.options.keyShift.isDown && ! autoSneak.value) return@register
             //#else
