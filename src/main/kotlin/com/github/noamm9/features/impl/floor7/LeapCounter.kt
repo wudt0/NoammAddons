@@ -3,9 +3,7 @@ package com.github.noamm9.features.impl.floor7
 import com.github.noamm9.NoammAddons
 import com.github.noamm9.config.types.TextInputSetting
 import com.github.noamm9.config.types.ToggleSetting
-import com.github.noamm9.event.impl.MainThreadPacketReceivedEvent
-import com.github.noamm9.event.impl.RenderWorldEvent
-import com.github.noamm9.event.impl.WorldChangeEvent
+import com.github.noamm9.event.impl.*
 import com.github.noamm9.features.Feature
 import com.github.noamm9.mixin.IClientboundMoveEntityPacket
 import com.github.noamm9.utils.ChatUtils
@@ -39,7 +37,7 @@ object LeapCounter: Feature("Shows how many players have leaped you") {
             val startFormat = if (region.maxCount - region.count <= 1) "§9" else "§4"
             val str = "$startFormat${region.count}§9/$max Players Leaped"
             ctx.drawCenteredString(str, 0, 0)
-            str.width().toFloat() to 9f
+            str.width() to 9f
         }
 
         register<MainThreadPacketReceivedEvent.Post> {
@@ -85,7 +83,10 @@ object LeapCounter: Feature("Shows how many players have leaped you") {
             }
         }
 
-        register<WorldChangeEvent> { REGION.reset() }
+        register<WorldChangeEvent> {
+            REGION.reset()
+            currentSpot = null
+        }
     }
 
     private enum class REGION(val box: AABB, val _maxCount: Int, val check: (x: Double, y: Double, z: Double) -> Boolean) {

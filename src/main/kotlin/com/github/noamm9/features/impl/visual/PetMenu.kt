@@ -1,9 +1,6 @@
 package com.github.noamm9.features.impl.visual
 
-import com.github.noamm9.config.types.ColorSetting
-import com.github.noamm9.config.types.KeybindSetting
-import com.github.noamm9.config.types.SliderSetting
-import com.github.noamm9.config.types.ToggleSetting
+import com.github.noamm9.config.types.*
 import com.github.noamm9.event.impl.ContainerEvent
 import com.github.noamm9.event.impl.ScreenEvent
 import com.github.noamm9.features.Feature
@@ -23,6 +20,7 @@ import com.github.noamm9.utils.render.Render2D.drawCenteredString
 import com.github.noamm9.utils.render.Render2D.drawLine
 import com.github.noamm9.utils.render.Render2D.drawRect
 import com.github.noamm9.utils.render.RenderHelper.width
+import com.mojang.blaze3d.platform.InputConstants
 import gg.essential.universal.UKeyboard
 import net.minecraft.client.gui.GuiGraphicsExtractor
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
@@ -221,7 +219,10 @@ object PetMenu: Feature("Replaces the Pets inventory with a custom pet wheel."),
             val keyName = run {
                 if (useHotbarBinds.value) {
                     val keybind = mc.options.keyHotbarSlots.getOrNull(index) as? IKeyMapping
-                    keybind?.key?.displayName?.string?.uppercase()
+                    keybind?.key?.let { key ->
+                        val name = key.displayName.string.uppercase()
+                        if (key.type == InputConstants.Type.MOUSE) name.replace("BUTTON ", "M") else name
+                    }
                 }
                 else keybinds.getOrNull(index)?.displayName()
             } ?: return
@@ -261,9 +262,9 @@ object PetMenu: Feature("Replaces the Pets inventory with a custom pet wheel."),
 
     private fun handleKeybind(screen: AbstractContainerScreen<*>, code: Int, mouse: Boolean): Boolean {
         val index = if (useHotbarBinds.value) {
-            if (mouse) return false
+            val type = if (mouse) InputConstants.Type.MOUSE else InputConstants.Type.KEYSYM
             mc.options.keyHotbarSlots.take(PETS_PER_WHEEL).withIndex().find {
-                (it.value as IKeyMapping).key.value == code
+                (it.value as IKeyMapping).key.let { key -> key.type == type && key.value == code }
             }?.index ?: - 1
         }
         else keybinds.indexOfFirst { it.matches(code, mouse) }
@@ -286,6 +287,8 @@ object PetMenu: Feature("Replaces the Pets inventory with a custom pet wheel."),
 
         lastClickAt = now
         GuiUtils.clickSlot(slotIndex, GuiUtils.ButtonType.LEFT)
+        // might seem like a cheat but hypixel already closes the menu as soon as u send a click
+        // so this is basically just zero-ping to close the menu faster. rather then waiting for hypixel to close it
         player.closeContainer()
     }
 

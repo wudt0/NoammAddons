@@ -1,5 +1,7 @@
 package com.github.noamm9.features.impl.misc
 
+//#if CHEAT
+
 import com.github.noamm9.features.Feature
 import com.mojang.blaze3d.platform.InputConstants
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper
@@ -69,3 +71,4 @@ object SnappyTappy: Feature("Prevents standing still when pressing opposing dire
         else GLFW.glfwGetKey(handle, bound.value) == GLFW.GLFW_PRESS
     }
 }
+//#endif
