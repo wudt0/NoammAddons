@@ -1,13 +1,13 @@
 package com.github.noamm9.features.impl.misc
 
+import com.github.noamm9.config.types.ColorSetting
+import com.github.noamm9.config.types.ToggleSetting
 import com.github.noamm9.event.impl.ContainerEvent
 import com.github.noamm9.event.impl.KeyboardEvent
 import com.github.noamm9.event.impl.MouseClickEvent
 import com.github.noamm9.event.impl.ScreenEvent
 import com.github.noamm9.features.Feature
 import com.github.noamm9.ui.clickgui.components.Style
-import com.github.noamm9.ui.clickgui.components.impl.ColorSetting
-import com.github.noamm9.ui.clickgui.components.impl.ToggleSetting
 import com.github.noamm9.ui.hud.HudElement
 import com.github.noamm9.ui.utils.Resolution
 import com.github.noamm9.ui.utils.TextInputHandler
@@ -18,6 +18,8 @@ import com.github.noamm9.utils.items.ItemUtils.lore
 import com.github.noamm9.utils.render.Render2D.drawCenteredString
 import com.github.noamm9.utils.render.Render2D.drawRect
 import com.github.noamm9.utils.render.Render2D.highlight
+import gg.essential.universal.UKeyboard
+import gg.essential.universal.UMinecraft
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
 import net.minecraft.client.input.MouseButtonEvent
 import net.minecraft.client.input.MouseButtonInfo
@@ -109,7 +111,7 @@ object InventorySearch: Feature("Lets you search in inventory and support math")
         register<KeyboardEvent.KeyPressed> {
             if (mc.gui.screen() !is AbstractContainerScreen<*>) return@register
 
-            if (event.keyEvent.key == GLFW.GLFW_KEY_F && event.keyEvent.hasControlDown()) {
+            if (event.keyEvent.key == UKeyboard.KEY_F && event.keyEvent.hasControlDown()) {
                 searchHandler.listening = ! searchHandler.listening
                 event.isCanceled = true
                 return@register

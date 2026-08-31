@@ -18,7 +18,9 @@ import com.github.noamm9.utils.Utils.send
 import com.github.noamm9.utils.dungeons.DungeonListener.thePlayer
 import com.github.noamm9.utils.dungeons.DungeonPlayer
 import com.github.noamm9.utils.items.ItemUtils.skyblockId
+import gg.essential.universal.UMinecraft
 import kotlinx.coroutines.delay
+import net.minecraft.client.gui.screens.Screen
 import net.minecraft.client.player.LocalPlayer
 import net.minecraft.core.BlockPos
 import net.minecraft.core.Direction

@@ -9,7 +9,7 @@ import com.github.noamm9.utils.NumbersUtils.toFixed
 import com.github.noamm9.utils.ThreadUtils
 import com.github.noamm9.utils.dungeons.DungeonListener
 import com.github.noamm9.utils.location.LocationUtils
-import com.github.noamm9.utils.render.Render3D.renderString
+import com.github.noamm9.utils.render.world.Render3D.renderString
 import net.minecraft.core.BlockPos
 import net.minecraft.world.level.block.FlowerPotBlock
 import net.minecraft.world.phys.Vec3

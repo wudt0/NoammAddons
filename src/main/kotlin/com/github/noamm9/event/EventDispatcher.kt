@@ -10,7 +10,8 @@ import com.github.noamm9.utils.dungeons.DungeonUtils
 import com.github.noamm9.utils.dungeons.DungeonUtils.isSecret
 import com.github.noamm9.utils.dungeons.enums.SecretType
 import com.github.noamm9.utils.location.LocationUtils
-import com.github.noamm9.utils.render.RenderContext
+import com.github.noamm9.utils.render.world.RenderBatcher
+import com.github.noamm9.utils.render.world.RenderContext
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLevelEvents
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents
@@ -36,6 +37,7 @@ object EventDispatcher: ISelfInit, Shortcuts {
     override fun init() {
         LevelRenderEvents.COLLECT_SUBMITS.register { context ->
             EventBus.post(RenderWorldEvent(RenderContext.fromContext(context)))
+            RenderBatcher.flush(context)
         }
 
         ClientLevelEvents.AFTER_CLIENT_LEVEL_CHANGE.register { _, _ -> EventBus.post(WorldChangeEvent) }
