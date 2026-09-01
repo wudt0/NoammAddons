@@ -17,7 +17,7 @@ on:
     paths: *build-paths
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}
