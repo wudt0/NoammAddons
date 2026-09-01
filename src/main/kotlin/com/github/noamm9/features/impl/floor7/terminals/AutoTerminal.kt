@@ -125,7 +125,10 @@ object AutoTerminal: Feature("Automatically clicks terminals for you.") {
         val delayTicks = delayMs / 50
         val initialWindowId = TerminalListener.lastWindowId
 
-        if (delayMs == 0) click(finalClick)
+        if (delayMs == 0) {
+            click(finalClick)
+            if (TerminalSolver.solution.isNotEmpty()) autoClick(TerminalSolver.solution, type)
+        }
         else Scheduler.schedule(delayMs, delayTicks) {
             if (TerminalListener.inTerm && initialWindowId == TerminalListener.lastWindowId) {
                 click(finalClick)

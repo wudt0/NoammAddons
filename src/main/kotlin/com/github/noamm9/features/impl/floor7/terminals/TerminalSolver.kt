@@ -316,8 +316,6 @@ object TerminalSolver: Feature("Renders solutions for Floor 7 terminals."), ICus
             if (click == null) return@register
             if (mode.value == 0 && isClicked) return@register
 
-            predict(click)
-
             val execute = {
                 if (mode.value == 0) click(click)
                 else if (isClicked) queue.add(click)
@@ -388,6 +386,7 @@ object TerminalSolver: Feature("Renders solutions for Floor 7 terminals."), ICus
 
     fun click(click: TerminalClick) {
         isClicked = true
+        predict(click)
         sendClickPacket(click.slotId, click.btn)
 
         val initialWindowId = TerminalListener.lastWindowId
